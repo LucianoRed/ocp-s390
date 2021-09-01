@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8:8.4-209
+FROM registry.access.redhat.com/rhel7.9:7.9-476
 RUN yum update -y
 RUN yum install -y net-tools tcpdump iperf3 httpd
 USER 1001
