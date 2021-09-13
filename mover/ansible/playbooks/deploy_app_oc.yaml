@@ -12,10 +12,25 @@
   - name: Expoe rota
     shell: "oc expose service/phpapp2 -n {{ NAMESPACE }}"
     ignore_errors: yes
+  - name: Expoe rota 2
+    shell: "oc expose service/phpapp2 --hostname=techu.openshiftdemo.com.br --name=rota2 -n {{ NAMESPACE }}"
+    ignore_errors: yes    
   - name: Obtem Rota
-    shell: "oc get route -n {{ NAMESPACE }}"
+    shell: "oc get route phpapp2 -n {{ NAMESPACE }} | awk {'print $2'}  | grep -v HOST"
     register: resultado
     ignore_errors: yes
+  - name: "Altera DNS CloudFlare com valor {{ resultado.stdout }}"
+    community.general.cloudflare_dns:
+      zone: openshiftdemo.com.br
+      record: techu
+      type: CNAME
+      value: "{{ resultado.stdout }}"
+      account_api_key: "{{ API_CLOUDFLARE }}"
+      api_token: "{{ TOKEN_CLOUDFLARE }}"
+      ttl: 120
+      # account_email: "{{ EMAIL_CLOUDFLARE }}"
+    ignore_errors: yes
+
 
 # Remove app do destino
 
