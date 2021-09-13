@@ -17,5 +17,6 @@ COPY src/ /var/www/html
 RUN useradd ansible -u 12345
 RUN yum install -y git
 USER 12345
+RUN ansible-galaxy collection install community.general
 EXPOSE 8080
 CMD ["/usr/sbin/httpd","-D","FOREGROUND"]
