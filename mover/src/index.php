@@ -895,7 +895,7 @@
     <section class="content">
       <?php
       if(file_exists("/tmp/cloud.txt")) {
-          $atual = file_get_contents("/tmp/cloud.txt");
+          $atual = chop(file_get_contents("/tmp/cloud.txt"));
       } else {
           $atual = "s390x";
       }
@@ -1067,7 +1067,7 @@ function MoveCloud(cloud) {
   $('.modal').modal('show');
   $.get( "move.php?cloud="+cloud, function( data ) {
      // $( ".result" ).html( data );
-      alert( "App migrada" + data);
+      alert( "App migrada para cloud "+cloud);
       console.log(data);
       $('.modal').modal('hide');
   }).done(function() {
