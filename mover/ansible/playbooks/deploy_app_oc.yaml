@@ -1,0 +1,32 @@
+- hosts: localhost
+  tasks:
+
+  - name: Login Openshift Destino
+    shell: "oc login --token={{ TOKEN_API_DESTINO }} --server={{ ENDERECO_API_DESTINO }} --insecure-skip-tls-verify=true"
+  - name: "Cria namespace {{ NAMESPACE }}"
+    shell: "oc new-project {{ NAMESPACE }}"
+    ignore_errors: yes
+  - name: Deploy App
+    shell: "oc new-app --image-stream=php https://github.com/LucianoRed/phpapp2.git --name=phpapp2 -e CLOUD={{ CLOUD }} -n {{ NAMESPACE }}"
+    ignore_errors: yes
+  - name: Expoe rota
+    shell: "oc expose service/phpapp2 -n {{ NAMESPACE }}"
+    ignore_errors: yes
+  - name: Obtem Rota
+    shell: "oc get route -n {{ NAMESPACE }}"
+    register: resultado
+    ignore_errors: yes
+
+# Remove app do destino
+
+  - name: Login Openshift Destino
+    shell: "oc login --token={{ TOKEN_API_ORIGEM }} --server={{ ENDERECO_API_ORIGEM }}  --insecure-skip-tls-verify=true"
+    ignore_errors: yes
+  - name: Remove Deployment
+    shell: "oc delete all -l app=phpapp2 -n {{ NAMESPACE }}"
+    ignore_errors: yes
+  - name: "Remove namespace {{ NAMESPACE }}"
+    shell: "oc delete project {{ NAMESPACE }}"
+    ignore_errors: yes
+
+

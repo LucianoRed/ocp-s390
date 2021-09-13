@@ -8,11 +8,14 @@ RUN yum install -y PyYAML python2-openshift
 #RUN yum install -y python-pip
 #RUN pip install --upgrade pip
 #RUN pip install --upgrade openshift
+COPY ansible/assets/oc /usr/local/bin/oc
+COPY ansible/assets/kubectl /usr/local/bin/kubectl
 COPY ansible/assets/httpd.conf /etc/httpd/conf/httpd.conf
 RUN chmod 777 /var/run/httpd/ /run/httpd /etc/httpd/logs/ && mkdir /.ansible && chmod -R 777 /.ansible && mkdir /playbooks && chmod 777 /playbooks
 COPY ansible/playbooks/ /playbooks/
 COPY src/ /var/www/html
 RUN useradd ansible -u 12345
+RUN yum install -y git
 USER 12345
 EXPOSE 8080
 CMD ["/usr/sbin/httpd","-D","FOREGROUND"]

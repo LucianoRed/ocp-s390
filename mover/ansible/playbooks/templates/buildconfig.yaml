@@ -1,0 +1,54 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  annotations:
+    app.openshift.io/vcs-ref: ""
+    app.openshift.io/vcs-uri: https://github.com/LucianoRed/phpapp2.git
+    openshift.io/generated-by: OpenShiftWebConsole
+  generation: 2
+  labels:
+    app: phpapp-2-git
+    app.kubernetes.io/component: phpapp-2-git
+    app.kubernetes.io/instance: phpapp-2-git
+    app.kubernetes.io/name: phpapp-2-git
+    app.kubernetes.io/part-of: phpapp-2-git-app
+    app.openshift.io/runtime: php
+    app.openshift.io/runtime-version: 7.4-ubi8
+  name: phpapp-2-git
+  namespace: techu-demo
+spec:
+  failedBuildsHistoryLimit: 5
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: phpapp-2-git:latest
+  postCommit: {}
+  resources: {}
+  runPolicy: Serial
+  source:
+    contextDir: /
+    git:
+      uri: https://github.com/LucianoRed/phpapp2.git
+    type: Git
+  strategy:
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: php:7.4-ubi8
+        namespace: openshift
+    type: Source
+  successfulBuildsHistoryLimit: 5
+  triggers:
+  - generic:
+      secretReference:
+        name: phpapp-2-git-generic-webhook-secret
+    type: Generic
+  - github:
+      secretReference:
+        name: phpapp-2-git-github-webhook-secret
+    type: GitHub
+  - imageChange:
+      lastTriggeredImageID: image-registry.openshift-image-registry.svc:5000/openshift/php
+    type: ImageChange
+  - type: ConfigChange

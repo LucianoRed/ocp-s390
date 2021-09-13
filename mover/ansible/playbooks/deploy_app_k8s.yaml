@@ -1,0 +1,27 @@
+- hosts: localhost
+  tasks:
+  - name: "Cria namespace {{ NAMESPACE }}"
+    k8s:
+      host: "{{ ENDERECO_API_DESTINO }}"
+      api_key: "{{ TOKEN_API_DESTINO }}"
+      validate_certs: no
+      name: "{{ NAMESPACE }}"
+      api_version: v1
+      kind: Namespace
+      state: present
+    ignore_errors: yes
+
+  
+
+  - name: "Remove namespace {{ NAMESPACE }}"
+    k8s:
+      host: "{{ ENDERECO_API_ORIGEM }}"
+      api_key: "{{ TOKEN_API_ORIGEM }}"
+      validate_certs: no
+      name: "{{ NAMESPACE }}"
+      api_version: v1
+      kind: Namespace
+      state: absent
+    ignore_errors: yes
+
+
